@@ -1,5 +1,9 @@
 # RadioLib ![Build Status](https://github.com/jgromes/RadioLib/workflows/CI/badge.svg)
 
+Forked from https://github.com/jgromes/RadioLib
+
+Added a Raspberry Pi WiringPi port that doesn't use Arduino.
+
 ### _One radio library to rule them all!_
 
 ## Universal wireless communication library for embedded devices
