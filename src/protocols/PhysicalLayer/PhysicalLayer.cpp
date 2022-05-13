@@ -7,6 +7,7 @@ PhysicalLayer::PhysicalLayer(float freqStep, size_t maxPacketLength) {
   _bufferWritePos = 0;
 }
 
+#ifdef RADIOLIB_BUILD_ARDUINO
 int16_t PhysicalLayer::transmit(__FlashStringHelper* fstr, uint8_t addr) {
   // read flash string length
   size_t len = 0;
@@ -43,19 +44,20 @@ int16_t PhysicalLayer::transmit(__FlashStringHelper* fstr, uint8_t addr) {
 int16_t PhysicalLayer::transmit(String& str, uint8_t addr) {
   return(transmit(str.c_str(), addr));
 }
+#endif
 
 int16_t PhysicalLayer::transmit(const char* str, uint8_t addr) {
   return(transmit((uint8_t*)str, strlen(str), addr));
 }
-
+#ifdef RADIOLIB_BUILD_ARDUINO
 int16_t PhysicalLayer::startTransmit(String& str, uint8_t addr) {
   return(startTransmit(str.c_str(), addr));
 }
-
+#endif
 int16_t PhysicalLayer::startTransmit(const char* str, uint8_t addr) {
   return(startTransmit((uint8_t*)str, strlen(str), addr));
 }
-
+#ifdef RADIOLIB_BUILD_ARDUINO
 int16_t PhysicalLayer::readData(String& str, size_t len) {
   int16_t state = RADIOLIB_ERR_NONE;
 
@@ -141,7 +143,7 @@ int16_t PhysicalLayer::receive(String& str, size_t len) {
 
   return(state);
 }
-
+#endif
 float PhysicalLayer::getFreqStep() const {
   return(_freqStep);
 }

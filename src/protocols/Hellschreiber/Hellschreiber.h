@@ -125,9 +125,10 @@ class HellClient {
     size_t write(const char* str);
     size_t write(uint8_t* buff, size_t len);
     size_t write(uint8_t b);
-
+#ifdef RADIOLIB_BUILD_ARDUINO
     size_t print(__FlashStringHelper*);
     size_t print(const String &);
+#endif
     size_t print(const char[]);
     size_t print(char);
     size_t print(unsigned char, int = DEC);
@@ -138,8 +139,10 @@ class HellClient {
     size_t print(double, int = 2);
 
     size_t println(void);
+#ifdef RADIOLIB_BUILD_ARDUINO  
     size_t println(__FlashStringHelper*);
     size_t println(const String &);
+#endif
     size_t println(const char[]);
     size_t println(char);
     size_t println(unsigned char, int = DEC);
