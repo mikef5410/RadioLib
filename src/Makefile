@@ -1,4 +1,5 @@
 
+INSTALL_PREFIX=/usr/local
 WIRING_PI=/usr/local
 VPATH=.:modules/CC1101:modules/LLCC68:modules/nRF24:modules/RF69
 VPATH+=:modules/RFM2x:modules/RFM9x:modules/Si443x:modules/SX1231
@@ -38,6 +39,10 @@ $(OBJS_DIR):
 libRadioLib.so: $(LIBOBJ)
 	g++ -shared -o$@ $(LIBOBJ)
 
+install: libRadioLib.so
+	cp libRadioLib.so $(INSTALL_PREFIX)/lib
+	mkdir -p $(INSTALL_PREFIX)/include/RadioLib
+	find . -name "*.h" -exec cp {} $(INSTALL_PREFIX)/include/RadioLib \;
 
 clean:
 	find . -name "*~" -o -name "#*" -o -name ".#*" | xargs rm -f
