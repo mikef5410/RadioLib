@@ -7,7 +7,7 @@ Module::Module(RADIOLIB_PIN_TYPE cs, RADIOLIB_PIN_TYPE irq, RADIOLIB_PIN_TYPE rs
   _rst{rst},
   _gpio{gpio}
 {
-  _initInterface = false;
+  _initInterface = true;
 
   // this is Arduino-like build, pre-set callbacks
   setCb_pinMode(::pinMode);
