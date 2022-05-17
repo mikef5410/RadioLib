@@ -85,9 +85,11 @@
 #include "protocols/PhysicalLayer/PhysicalLayer.h"
 #include "protocols/AFSK/AFSK.h"
 #include "protocols/AX25/AX25.h"
+#ifndef USE_WIRINGPI
 #include "protocols/Hellschreiber/Hellschreiber.h"
 #include "protocols/Morse/Morse.h"
 #include "protocols/RTTY/RTTY.h"
+#endif
 #include "protocols/SSTV/SSTV.h"
 #include "protocols/FSK4/FSK4.h"
 #include "protocols/APRS/APRS.h"

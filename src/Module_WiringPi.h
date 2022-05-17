@@ -4,7 +4,6 @@
 #include "wiringPi.h"
 #include "wiringPiSPI.h"
 
-#define RADIOLIB_TONE_UNSUPPORTED
 
 
 #include "TypeDef.h"
@@ -27,16 +26,30 @@ public:
   uint32_t clock; //clock frequency in Hz
   uint8_t bitOrder; //MSBFIRST or LSBFIRST
   uint8_t dataMode; //0,1,2,3
+  bool IPcontrolsCE;
+  int gpioCE;
+  
   SPISettings(uint32_t _clock, uint8_t _bitOrder, uint8_t _dataMode):
     clock(_clock),
     bitOrder(_bitOrder),
     dataMode(_dataMode)
   {
+    IPcontrolsCE=1;
     channel=0;
   }
+
   void setChannel(uint8_t chan) {
-    channel=chan; //Set the chip enable line 0 -> CE0, 1-> CE1  
-                      }
+    channel=chan; //Set the chip enable line 0 -> CE0, 1-> CE1
+  }
+
+  void setGPIOCE(int gpio) { //GPIO#gpio is the CE. Code needs to manually operate it in begin/endTransaction
+    gpioCE=gpio;
+    IPcontrolsCE=0;
+    channel=0;
+    pinMode(gpio,OUTPUT);
+    digitalWrite(gpio,HIGH);
+  }
+
   friend class SPIClass;
 };
 
@@ -72,9 +85,9 @@ public:
     wiringPiSPIDataRW(settings.channel, (unsigned char *)&buf, count);
   }
   void endTransaction(void) {
+    if (postTransHook != NULL) (*postTransHook)();
   }
   void end() {
-    if (postTransHook != NULL) (*postTransHook)();
   }
   void setBitOrder(uint8_t bitOrder) {
   }

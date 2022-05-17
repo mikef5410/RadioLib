@@ -896,7 +896,9 @@ inline unsigned long micros() { return((unsigned long)(STCV)); };
 #define RADIOLIB_CB_ARGS_PIN_MODE                   (void, pinMode, int pin, int mode)
 #define RADIOLIB_CB_ARGS_DIGITAL_WRITE              (void, digitalWrite, int pin, int value)
 #define RADIOLIB_CB_ARGS_DIGITAL_READ               (int, digitalRead, int pin)
-#define RADIOLIB_TONE_UNSUPPORTED
+#define RADIOLIB_TONE_UNSUPPORTED                   1
+#define RADIOLIB_EXCLUDE_AFSK
+
 //#define RADIOLIB_CB_ARGS_TONE                       (void, tone, uint8_t _pin, unsigned int frequency, unsigned long duration)
 //#define RADIOLIB_CB_ARGS_NO_TONE                    (void, noTone, uint8_t _pin)
 #define RADIOLIB_CB_ARGS_ATTACH_INTERRUPT           (void, attachInterrupt, uint8_t interruptNum, void (*userFunc)(void), int mode)

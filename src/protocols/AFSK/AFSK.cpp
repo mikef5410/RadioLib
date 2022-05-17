@@ -29,5 +29,4 @@ int16_t AFSKClient::noTone() {
   mod->noTone(_pin);
   return(_phy->standby());
 }
-
 #endif

@@ -26,6 +26,15 @@ Module::Module(RADIOLIB_PIN_TYPE cs, RADIOLIB_PIN_TYPE irq, RADIOLIB_PIN_TYPE rs
   setCb_delayMicroseconds(::delayMicroseconds);
   setCb_millis(::millis);
   setCb_micros(::micros);
+  //GPIO7 is CE1, GPIO8 is CE0
+  if ( _cs == 7 || _cs == 8)  {
+    _spiSettings.IPcontrolsCE=1;
+    _spiSettings.channel = (_cs==7 )? 1 : 0;
+  } else {
+    _spiSettings.gpioCE = _cs;
+    _spiSettings.IPcontrolsCE = 0;
+    _spiSettings.channel = 0; //the IP is going to assert GPIO7 anyway...
+  }
 }
 
 Module::Module(const Module& mod) {
@@ -144,8 +153,9 @@ void Module::SPItransfer(uint8_t cmd, uint8_t reg, uint8_t* dataOut, uint8_t* da
   this->SPIbeginTransaction();
 
   // pull CS low
-  this->digitalWrite(_cs, LOW);
-
+  if (!_spiSettings.IPcontrolsCE) {
+    this->digitalWrite(_cs, LOW);
+  }
   // send SPI register address with access command
   this->SPItransfer(reg | cmd);
   #if defined(RADIOLIB_VERBOSE)
@@ -180,8 +190,9 @@ void Module::SPItransfer(uint8_t cmd, uint8_t reg, uint8_t* dataOut, uint8_t* da
   RADIOLIB_VERBOSE_PRINTLN();
 
   // release CS
-  this->digitalWrite(_cs, HIGH);
-
+  if (!_spiSettings.IPcontrolsCE) {
+    this->digitalWrite(_cs, HIGH);
+  }
   // end SPI transaction
   this->SPIendTransaction();
 }

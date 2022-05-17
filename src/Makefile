@@ -18,7 +18,7 @@ cscope id etags tags: INDEX_FILES=$(shell find -L $(subst :, ,$(VPATH)) $(FILETY
 CPPFLAGS+=$(INCLUDES)
 CFLAGS+= -fPIC -Wall -g
 CFLAGS+= -Wredundant-decls -Wswitch-default -fpermissive
-CFLAGS+= -DUSE_WIRINGPI
+CFLAGS+= -DUSE_WIRINGPI $(LIBS)
 CXXFLAGS=$(CFLAGS)
 
 SRCS:=$(shell find . -name "*.cpp" -printf "%f ")
@@ -37,12 +37,14 @@ $(OBJS_DIR):
 
 
 libRadioLib.so: $(LIBOBJ)
-	g++ -shared -o$@ $(LIBOBJ)
+	g++ -shared -o$@ $(LIBOBJ) 
 
 install: libRadioLib.so
 	cp libRadioLib.so $(INSTALL_PREFIX)/lib
+	rm -rf  $(INSTALL_PREFIX)/include/RadioLib
 	mkdir -p $(INSTALL_PREFIX)/include/RadioLib
-	find . -name "*.h" -exec cp {} $(INSTALL_PREFIX)/include/RadioLib \;
+	#find . -name "*.h" -exec cp {} $(INSTALL_PREFIX)/include/RadioLib \;
+	find . -name "*.h" | cpio -pdumv $(INSTALL_PREFIX)/include/RadioLib
 
 clean:
 	find . -name "*~" -o -name "#*" -o -name ".#*" | xargs rm -f
