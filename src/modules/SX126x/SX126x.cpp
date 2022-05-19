@@ -216,7 +216,7 @@ int16_t SX126x::transmit(uint8_t* data, size_t len, uint8_t addr) {
   }
 
   RADIOLIB_DEBUG_PRINT(F("Timeout in "));
-  RADIOLIB_DEBUG_PRINT(timeout);
+  RADIOLIB_DEBUG_PRINT("%d",timeout);
   RADIOLIB_DEBUG_PRINTLN(F(" us"));
 
   // start transmission
@@ -275,7 +275,7 @@ int16_t SX126x::receive(uint8_t* data, size_t len) {
   }
 
   RADIOLIB_DEBUG_PRINT(F("Timeout in "));
-  RADIOLIB_DEBUG_PRINT(timeout);
+  RADIOLIB_DEBUG_PRINT("%d",timeout);
   RADIOLIB_DEBUG_PRINTLN(F(" us"));
 
   // start reception
@@ -498,7 +498,7 @@ int16_t SX126x::startReceiveDutyCycleAuto(uint16_t senderPreambleLength, uint16_
   uint32_t symbolLength = ((uint32_t)(10 * 1000) << _sf) / (10 * _bwKhz);
   uint32_t sleepPeriod = symbolLength * sleepSymbols;
   RADIOLIB_DEBUG_PRINT(F("Auto sleep period: "));
-  RADIOLIB_DEBUG_PRINTLN(sleepPeriod);
+  RADIOLIB_DEBUG_PRINTLN("%d",sleepPeriod);
 
   // when the unit detects a preamble, it starts a timer that will timeout if it doesn't receive a header in time.
   // the duration is sleepPeriod + 2 * wakePeriod.
@@ -510,7 +510,7 @@ int16_t SX126x::startReceiveDutyCycleAuto(uint16_t senderPreambleLength, uint16_
     (symbolLength * (senderPreambleLength + 1) - (sleepPeriod - 1000)) / 2, // (A)
     symbolLength * (minSymbols + 1)); //(B)
   RADIOLIB_DEBUG_PRINT(F("Auto wake period: "));
-  RADIOLIB_DEBUG_PRINTLN(wakePeriod);
+  RADIOLIB_DEBUG_PRINTLN("%d",wakePeriod);
 
   // If our sleep period is shorter than our transition time, just use the standard startReceive
   if(sleepPeriod < _tcxoDelay + 1016) {
@@ -1418,7 +1418,7 @@ int16_t SX126x::setModulationParams(uint8_t sf, uint8_t bw, uint8_t cr, uint8_t 
   if(_ldroAuto) {
     float symbolLength = (float)(uint32_t(1) << _sf) / (float)_bwKhz;
     RADIOLIB_DEBUG_PRINT("Symbol length: ");
-    RADIOLIB_DEBUG_PRINT(symbolLength);
+    RADIOLIB_DEBUG_PRINT("%g",symbolLength);
     RADIOLIB_DEBUG_PRINTLN(" ms");
     if(symbolLength >= 16.0) {
       _ldro = RADIOLIB_SX126X_LORA_LOW_DATA_RATE_OPTIMIZE_ON;
@@ -1726,39 +1726,39 @@ int16_t SX126x::SPItransfer(uint8_t* cmd, uint8_t cmdLen, bool write, uint8_t* d
     // print command byte(s)
     RADIOLIB_VERBOSE_PRINT("CMD\t");
     for(uint8_t n = 0; n < cmdLen; n++) {
-      RADIOLIB_VERBOSE_PRINT(cmd[n], HEX);
-      RADIOLIB_VERBOSE_PRINT('\t');
+      RADIOLIB_VERBOSE_PRINT("0x%x",cmd[n]);
+      RADIOLIB_VERBOSE_PRINT("%s","\t");
     }
-    RADIOLIB_VERBOSE_PRINTLN();
+    RADIOLIB_VERBOSE_PRINTLN(F(""));
 
     // print data bytes
     RADIOLIB_VERBOSE_PRINT("DAT");
     if(write) {
       RADIOLIB_VERBOSE_PRINT("W\t");
       for(uint8_t n = 0; n < numBytes; n++) {
-        RADIOLIB_VERBOSE_PRINT(dataOut[n], HEX);
-        RADIOLIB_VERBOSE_PRINT('\t');
-        RADIOLIB_VERBOSE_PRINT(debugBuff[n], HEX);
-        RADIOLIB_VERBOSE_PRINT('\t');
+        RADIOLIB_VERBOSE_PRINT("0x%x",dataOut[n]);
+        RADIOLIB_VERBOSE_PRINT("%s","\t");
+        RADIOLIB_VERBOSE_PRINT("0x%x",debugBuff[n]);
+        RADIOLIB_VERBOSE_PRINT("%s","\t");
       }
-      RADIOLIB_VERBOSE_PRINTLN();
+      RADIOLIB_VERBOSE_PRINTLN(F(""));
     } else {
       RADIOLIB_VERBOSE_PRINT("R\t");
       // skip the first byte for read-type commands (status-only)
-      RADIOLIB_VERBOSE_PRINT(RADIOLIB_SX126X_CMD_NOP, HEX);
-      RADIOLIB_VERBOSE_PRINT('\t');
-      RADIOLIB_VERBOSE_PRINT(debugBuff[0], HEX);
-      RADIOLIB_VERBOSE_PRINT('\t')
+      RADIOLIB_VERBOSE_PRINT("0x%x",RADIOLIB_SX126X_CMD_NOP);
+      RADIOLIB_VERBOSE_PRINT("\t");
+      RADIOLIB_VERBOSE_PRINT("0x%x",debugBuff[0]);
+      RADIOLIB_VERBOSE_PRINT("\t")
 
       for(uint8_t n = 0; n < numBytes; n++) {
-        RADIOLIB_VERBOSE_PRINT(RADIOLIB_SX126X_CMD_NOP, HEX);
-        RADIOLIB_VERBOSE_PRINT('\t');
-        RADIOLIB_VERBOSE_PRINT(dataIn[n], HEX);
-        RADIOLIB_VERBOSE_PRINT('\t');
+        RADIOLIB_VERBOSE_PRINT("0x%x",RADIOLIB_SX126X_CMD_NOP);
+        RADIOLIB_VERBOSE_PRINT("\t");
+        RADIOLIB_VERBOSE_PRINT("0x%x",dataIn[n]);
+        RADIOLIB_VERBOSE_PRINT("\t");
       }
-      RADIOLIB_VERBOSE_PRINTLN();
+      RADIOLIB_VERBOSE_PRINTLN(F(""));
     }
-    RADIOLIB_VERBOSE_PRINTLN();
+    RADIOLIB_VERBOSE_PRINTLN(F(""));
   #else
     // some faster platforms require a short delay here
     // not sure why, but it seems that long enough SPI transaction

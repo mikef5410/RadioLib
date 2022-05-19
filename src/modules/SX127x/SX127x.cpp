@@ -1275,14 +1275,14 @@ bool SX127x::findChip(uint8_t ver) {
     } else {
       #if defined(RADIOLIB_DEBUG)
         RADIOLIB_DEBUG_PRINT(F("SX127x not found! ("));
-        RADIOLIB_DEBUG_PRINT(i + 1);
+        RADIOLIB_DEBUG_PRINT("%d",i + 1);
         RADIOLIB_DEBUG_PRINT(F(" of 10 tries) RADIOLIB_SX127X_REG_VERSION == "));
 
         char buffHex[12];
         sprintf(buffHex, "0x%04X", version);
-        RADIOLIB_DEBUG_PRINT(buffHex);
+        RADIOLIB_DEBUG_PRINT(F(buffHex));
         RADIOLIB_DEBUG_PRINT(F(", expected 0x00"));
-        RADIOLIB_DEBUG_PRINTLN(ver, HEX);
+        RADIOLIB_DEBUG_PRINTLN("0x%x",ver);
       #endif
       _mod->delay(10);
       i++;

@@ -963,16 +963,16 @@ inline unsigned long micros() { return((unsigned long)(STCV)); };
  *         verbose - full transcript of all SPI communication
  */
 #if !defined(RADIOLIB_DEBUG)
-//#define RADIOLIB_DEBUG
+#define RADIOLIB_DEBUG
 #endif
 #if !defined(RADIOLIB_VERBOSE)
-//#define RADIOLIB_VERBOSE
+#define RADIOLIB_VERBOSE
 #endif
 
 // set which output port should be used for debug output
 // may be Serial port (on Arduino) or file like stdout or stderr (on generic platforms)
 #if !defined(RADIOLIB_DEBUG_PORT)
-#define RADIOLIB_DEBUG_PORT   Serial
+#define RADIOLIB_DEBUG_PORT   stderr
 #endif
 
 /*
@@ -1050,10 +1050,11 @@ inline unsigned long micros() { return((unsigned long)(STCV)); };
 #define RADIOLIB_DEBUG_PRINTLN(...) { RADIOLIB_DEBUG_PORT.println(__VA_ARGS__); }
 #else
 #if !defined(RADIOLIB_DEBUG_PRINT)
-#define RADIOLIB_DEBUG_PRINT(...) { frintf(RADIOLIB_DEBUG_PORT, __VA_ARGS__); }
+#define F(x) "%s",x
+#define RADIOLIB_DEBUG_PRINT(...) { fprintf(RADIOLIB_DEBUG_PORT, __VA_ARGS__); }
 #endif
 #if !defined(RADIOLIB_DEBUG_PRINTLN)
-#define RADIOLIB_DEBUG_PRINTLN(...)  { printf(RADIOLIB_DEBUG_PORT, __VA_ARGS__ "\n"); }
+#define RADIOLIB_DEBUG_PRINTLN(...)  { fprintf(RADIOLIB_DEBUG_PORT, __VA_ARGS__ );fprintf(RADIOLIB_DEBUG_PORT,"\n"); }
 #endif
 #endif
 #else

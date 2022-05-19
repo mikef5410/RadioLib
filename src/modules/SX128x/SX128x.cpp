@@ -288,7 +288,7 @@ int16_t SX128x::transmit(uint8_t* data, size_t len, uint8_t addr) {
   uint32_t timeout = getTimeOnAir(len) * 5;
 
   RADIOLIB_DEBUG_PRINT(F("Timeout in "));
-  RADIOLIB_DEBUG_PRINT(timeout);
+  RADIOLIB_DEBUG_PRINT("%d",timeout);
   RADIOLIB_DEBUG_PRINTLN(F(" us"));
 
   // start transmission
@@ -331,7 +331,7 @@ int16_t SX128x::receive(uint8_t* data, size_t len) {
   uint32_t timeout = getTimeOnAir(len) * 10;
 
   RADIOLIB_DEBUG_PRINT(F("Timeout in "));
-  RADIOLIB_DEBUG_PRINT(timeout);
+  RADIOLIB_DEBUG_PRINT("%d",timeout);
   RADIOLIB_DEBUG_PRINTLN(F(" us"));
 
   // start reception
@@ -1511,39 +1511,39 @@ int16_t SX128x::SPItransfer(uint8_t* cmd, uint8_t cmdLen, bool write, uint8_t* d
     // print command byte(s)
     RADIOLIB_VERBOSE_PRINT("CMD\t");
     for(uint8_t n = 0; n < cmdLen; n++) {
-      RADIOLIB_VERBOSE_PRINT(cmd[n], HEX);
-      RADIOLIB_VERBOSE_PRINT('\t');
+      RADIOLIB_VERBOSE_PRINT("0x%x",cmd[n]);
+      RADIOLIB_VERBOSE_PRINT("\t");
     }
-    RADIOLIB_VERBOSE_PRINTLN();
+    RADIOLIB_VERBOSE_PRINTLN(F(""));
 
     // print data bytes
     RADIOLIB_VERBOSE_PRINT("DAT");
     if(write) {
       RADIOLIB_VERBOSE_PRINT("W\t");
       for(uint8_t n = 0; n < numBytes; n++) {
-        RADIOLIB_VERBOSE_PRINT(dataOut[n], HEX);
-        RADIOLIB_VERBOSE_PRINT('\t');
-        RADIOLIB_VERBOSE_PRINT(debugBuff[n], HEX);
-        RADIOLIB_VERBOSE_PRINT('\t');
+        RADIOLIB_VERBOSE_PRINT("0x%x",dataOut[n]);
+        RADIOLIB_VERBOSE_PRINT("\t");
+        RADIOLIB_VERBOSE_PRINT("0x%x",debugBuff[n]);
+        RADIOLIB_VERBOSE_PRINT("\t");
       }
-      RADIOLIB_VERBOSE_PRINTLN();
+      RADIOLIB_VERBOSE_PRINTLN(F(""));
     } else {
       RADIOLIB_VERBOSE_PRINT("R\t");
       // skip the first byte for read-type commands (status-only)
-      RADIOLIB_VERBOSE_PRINT(RADIOLIB_SX128X_CMD_NOP, HEX);
-      RADIOLIB_VERBOSE_PRINT('\t');
-      RADIOLIB_VERBOSE_PRINT(debugBuff[0], HEX);
-      RADIOLIB_VERBOSE_PRINT('\t')
+      RADIOLIB_VERBOSE_PRINT("0x%x",RADIOLIB_SX128X_CMD_NOP);
+      RADIOLIB_VERBOSE_PRINT("\t");
+      RADIOLIB_VERBOSE_PRINT("0x%x",debugBuff[0]);
+      RADIOLIB_VERBOSE_PRINT("\t")
 
       for(uint8_t n = 0; n < numBytes; n++) {
-        RADIOLIB_VERBOSE_PRINT(RADIOLIB_SX128X_CMD_NOP, HEX);
-        RADIOLIB_VERBOSE_PRINT('\t');
-        RADIOLIB_VERBOSE_PRINT(dataIn[n], HEX);
-        RADIOLIB_VERBOSE_PRINT('\t');
+        RADIOLIB_VERBOSE_PRINT("0x%x",RADIOLIB_SX128X_CMD_NOP);
+        RADIOLIB_VERBOSE_PRINT("\t");
+        RADIOLIB_VERBOSE_PRINT("0x%x",dataIn[n]);
+        RADIOLIB_VERBOSE_PRINT("\t");
       }
-      RADIOLIB_VERBOSE_PRINTLN();
+      RADIOLIB_VERBOSE_PRINTLN(F(""));
     }
-    RADIOLIB_VERBOSE_PRINTLN();
+    RADIOLIB_VERBOSE_PRINTLN(F(""));
   #else
     // some faster platforms require a short delay here
     // not sure why, but it seems that long enough SPI transaction

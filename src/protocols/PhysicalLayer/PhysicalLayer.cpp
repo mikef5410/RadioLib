@@ -164,7 +164,7 @@ int32_t PhysicalLayer::random(int32_t max) {
   if(randNum < 0) {
     randNum *= -1;
   }
-  RADIOLIB_DEBUG_PRINTLN(randNum);
+  RADIOLIB_DEBUG_PRINTLN("%d",randNum);
   return(randNum % max);
 }
 

@@ -666,14 +666,14 @@ bool Si443x::findChip() {
     } else {
       #if defined(RADIOLIB_DEBUG)
         RADIOLIB_DEBUG_PRINT(F("Si443x not found! ("));
-        RADIOLIB_DEBUG_PRINT(i + 1);
+        RADIOLIB_DEBUG_PRINT("%d",i + 1);
         RADIOLIB_DEBUG_PRINT(F(" of 10 tries) RADIOLIB_SI443X_REG_DEVICE_VERSION == "));
 
         char buffHex[5];
         sprintf(buffHex, "0x%02X", version);
-        RADIOLIB_DEBUG_PRINT(buffHex);
+        RADIOLIB_DEBUG_PRINT(F(buffHex));
         RADIOLIB_DEBUG_PRINT(F(", expected 0x00"));
-        RADIOLIB_DEBUG_PRINTLN(RADIOLIB_SI443X_DEVICE_VERSION, HEX);
+        RADIOLIB_DEBUG_PRINTLN("0x%x",RADIOLIB_SI443X_DEVICE_VERSION);
       #endif
       _mod->delay(10);
       i++;
@@ -743,20 +743,20 @@ int16_t Si443x::updateClockRecovery() {
   uint16_t rxOsr_fixed = (uint16_t)rxOsr;
 
   // print that whole mess
-  RADIOLIB_DEBUG_PRINTLN(bypass, HEX);
-  RADIOLIB_DEBUG_PRINTLN(decRate, HEX);
-  RADIOLIB_DEBUG_PRINTLN(manch, HEX);
-  RADIOLIB_DEBUG_PRINT(rxOsr, 3);
-  RADIOLIB_DEBUG_PRINT('\t');
-  RADIOLIB_DEBUG_PRINT(rxOsr_fixed);
-  RADIOLIB_DEBUG_PRINT('\t');
-  RADIOLIB_DEBUG_PRINTLN(rxOsr_fixed, HEX);
-  RADIOLIB_DEBUG_PRINT(ncoOff);
-  RADIOLIB_DEBUG_PRINT('\t');
-  RADIOLIB_DEBUG_PRINTLN(ncoOff, HEX);
-  RADIOLIB_DEBUG_PRINT(crGain);
-  RADIOLIB_DEBUG_PRINT('\t');
-  RADIOLIB_DEBUG_PRINTLN(crGain, HEX);
+  RADIOLIB_DEBUG_PRINTLN("0x%x",bypass);
+  RADIOLIB_DEBUG_PRINTLN("0x%x",decRate);
+  RADIOLIB_DEBUG_PRINTLN("0x%x",manch);
+  RADIOLIB_DEBUG_PRINT("%g",rxOsr);
+  RADIOLIB_DEBUG_PRINT("\t");
+  RADIOLIB_DEBUG_PRINT("%d",rxOsr_fixed);
+  RADIOLIB_DEBUG_PRINT("\t");
+  RADIOLIB_DEBUG_PRINTLN("0x%x",rxOsr_fixed);
+  RADIOLIB_DEBUG_PRINT("%d",ncoOff);
+  RADIOLIB_DEBUG_PRINT("\t");
+  RADIOLIB_DEBUG_PRINTLN("0x%x",ncoOff);
+  RADIOLIB_DEBUG_PRINT("%d",crGain);
+  RADIOLIB_DEBUG_PRINT("\t");
+  RADIOLIB_DEBUG_PRINTLN("0x%x",crGain);
 
   // update oversampling ratio
   int16_t state = _mod->SPIsetRegValue(RADIOLIB_SI443X_REG_CLOCK_REC_OFFSET_2, (uint8_t)((rxOsr_fixed & 0x0700) >> 3), 7, 5);

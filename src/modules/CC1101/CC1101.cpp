@@ -26,14 +26,14 @@ int16_t CC1101::begin(float freq, float br, float freqDev, float rxBw, int8_t po
     } else {
       #if defined(RADIOLIB_DEBUG)
         RADIOLIB_DEBUG_PRINT(F("CC1101 not found! ("));
-        RADIOLIB_DEBUG_PRINT(i + 1);
+        RADIOLIB_DEBUG_PRINT("%d",i + 1);
         RADIOLIB_DEBUG_PRINT(F(" of 10 tries) RADIOLIB_CC1101_REG_VERSION == "));
 
         char buffHex[7];
         sprintf(buffHex, "0x%04X", version);
-        RADIOLIB_DEBUG_PRINT(buffHex);
+        RADIOLIB_DEBUG_PRINT("%s",buffHex);
         RADIOLIB_DEBUG_PRINT(F(", expected 0x0004/0x0014"));
-        RADIOLIB_DEBUG_PRINTLN();
+        RADIOLIB_DEBUG_PRINTLN(F(""));
       #endif
       _mod->delay(10);
       i++;

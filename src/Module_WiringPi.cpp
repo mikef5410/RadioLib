@@ -105,24 +105,24 @@ int16_t Module::SPIsetRegValue(uint8_t reg, uint8_t value, uint8_t msb, uint8_t 
     }
 
     // check failed, print debug info
-    RADIOLIB_DEBUG_PRINTLN();
+    RADIOLIB_DEBUG_PRINTLN(F(""));
     RADIOLIB_DEBUG_PRINT(F("address:\t0x"));
-    RADIOLIB_DEBUG_PRINTLN(reg, HEX);
+    RADIOLIB_DEBUG_PRINTLN("0x%x",reg);
     RADIOLIB_DEBUG_PRINT(F("bits:\t\t"));
-    RADIOLIB_DEBUG_PRINT(msb);
-    RADIOLIB_DEBUG_PRINT(' ');
-    RADIOLIB_DEBUG_PRINTLN(lsb);
+    RADIOLIB_DEBUG_PRINT("0x%x",msb);
+    RADIOLIB_DEBUG_PRINT(" ");
+    RADIOLIB_DEBUG_PRINTLN("0x%x",lsb);
     RADIOLIB_DEBUG_PRINT(F("value:\t\t0b"));
-    RADIOLIB_DEBUG_PRINTLN(value, BIN);
+    RADIOLIB_DEBUG_PRINTLN("0x%x",value);
     RADIOLIB_DEBUG_PRINT(F("current:\t0b"));
-    RADIOLIB_DEBUG_PRINTLN(currentValue, BIN);
+    RADIOLIB_DEBUG_PRINTLN("0x%x",currentValue);
     RADIOLIB_DEBUG_PRINT(F("mask:\t\t0b"));
-    RADIOLIB_DEBUG_PRINTLN(mask, BIN);
+    RADIOLIB_DEBUG_PRINTLN("0x%x",mask);
     RADIOLIB_DEBUG_PRINT(F("new:\t\t0b"));
-    RADIOLIB_DEBUG_PRINTLN(newValue, BIN);
+    RADIOLIB_DEBUG_PRINTLN("0x%x",newValue);
     RADIOLIB_DEBUG_PRINT(F("read:\t\t0b"));
-    RADIOLIB_DEBUG_PRINTLN(readValue, BIN);
-    RADIOLIB_DEBUG_PRINTLN();
+    RADIOLIB_DEBUG_PRINTLN("0x%x",readValue);
+    RADIOLIB_DEBUG_PRINTLN(F(""));
 
     return(RADIOLIB_ERR_SPI_WRITE_FAILED);
   #else
@@ -160,13 +160,13 @@ void Module::SPItransfer(uint8_t cmd, uint8_t reg, uint8_t* dataOut, uint8_t* da
   this->SPItransfer(reg | cmd);
   #if defined(RADIOLIB_VERBOSE)
     if(cmd == SPIwriteCommand) {
-      RADIOLIB_VERBOSE_PRINT('W');
+      RADIOLIB_VERBOSE_PRINT("W");
     } else if(cmd == SPIreadCommand) {
-      RADIOLIB_VERBOSE_PRINT('R');
+      RADIOLIB_VERBOSE_PRINT("R");
     }
-    RADIOLIB_VERBOSE_PRINT('\t')
-    RADIOLIB_VERBOSE_PRINT(reg, HEX);
-    RADIOLIB_VERBOSE_PRINT('\t');
+    RADIOLIB_VERBOSE_PRINT("\t");
+    RADIOLIB_VERBOSE_PRINT("0x%x",reg);
+    RADIOLIB_VERBOSE_PRINT("\t");
   #endif
 
   // send data or get response
@@ -174,20 +174,20 @@ void Module::SPItransfer(uint8_t cmd, uint8_t reg, uint8_t* dataOut, uint8_t* da
     if(dataOut != NULL) {
       for(size_t n = 0; n < numBytes; n++) {
         this->SPItransfer(dataOut[n]);
-        RADIOLIB_VERBOSE_PRINT(dataOut[n], HEX);
-        RADIOLIB_VERBOSE_PRINT('\t');
+        RADIOLIB_VERBOSE_PRINT("0x%x",dataOut[n]);
+        RADIOLIB_VERBOSE_PRINT("\t");
       }
     }
   } else if (cmd == SPIreadCommand) {
     if(dataIn != NULL) {
       for(size_t n = 0; n < numBytes; n++) {
         dataIn[n] = this->SPItransfer(0x00);
-        RADIOLIB_VERBOSE_PRINT(dataIn[n], HEX);
-        RADIOLIB_VERBOSE_PRINT('\t');
+        RADIOLIB_VERBOSE_PRINT("0x%x",dataIn[n]);
+        RADIOLIB_VERBOSE_PRINT("\t");
       }
     }
   }
-  RADIOLIB_VERBOSE_PRINTLN();
+  RADIOLIB_VERBOSE_PRINTLN(F(""));
 
   // release CS
   if (!_spiSettings.IPcontrolsCE) {

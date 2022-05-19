@@ -120,7 +120,7 @@ int16_t SX1278::setBandwidth(float bw) {
     if(_ldroAuto) {
       float symbolLength = (float)(uint32_t(1) << SX127x::_sf) / (float)SX127x::_bw;
       RADIOLIB_DEBUG_PRINT("Symbol length: ");
-      RADIOLIB_DEBUG_PRINT(symbolLength);
+      RADIOLIB_DEBUG_PRINT("%g",symbolLength);
       RADIOLIB_DEBUG_PRINTLN(" ms");
       if(symbolLength >= 16.0) {
         state = _mod->SPIsetRegValue(RADIOLIB_SX1278_REG_MODEM_CONFIG_3, RADIOLIB_SX1278_LOW_DATA_RATE_OPT_ON, 3, 3);
@@ -176,7 +176,7 @@ int16_t SX1278::setSpreadingFactor(uint8_t sf) {
     if(_ldroAuto) {
       float symbolLength = (float)(uint32_t(1) << SX127x::_sf) / (float)SX127x::_bw;
       RADIOLIB_DEBUG_PRINT("Symbol length: ");
-      RADIOLIB_DEBUG_PRINT(symbolLength);
+      RADIOLIB_DEBUG_PRINT("%g",symbolLength);
       RADIOLIB_DEBUG_PRINTLN(" ms");
       if(symbolLength >= 16.0) {
         state = _mod->SPIsetRegValue(RADIOLIB_SX1278_REG_MODEM_CONFIG_3, RADIOLIB_SX1278_LOW_DATA_RATE_OPT_ON, 3, 3);
