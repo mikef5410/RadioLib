@@ -1,5 +1,53 @@
 #include "Module.h"
 
+#include <ctype.h>
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wformat-truncation"
+void hexDumpBuf(unsigned char *buf, int size)
+{
+  int row;
+  int col;
+  int j;
+  const int cols = 16;
+  char line[255];
+  char newl[255];
+  
+  for (row = 0; row <= (size / cols); row++) {
+    bzero(line,255);
+    line[0] = 0;
+    snprintf(line, 255, "%.4x  ", row * cols);
+    for (col = 0; col < cols; col++) {
+      if (row * cols + col >= size)
+        break;
+      snprintf(newl, 255, "%s %.2x", line, buf[(row * cols) + col]);
+      strncpy(line,newl,255);
+    }
+    if (col < cols) {           //line up the ascii decoded out for fractional line
+      for (j = 0; j < (cols - col); j++) {
+        snprintf(newl, 255, "%s   ", line);
+        strncpy(line,newl,255);
+      }
+    }
+    snprintf(newl, 255, "%s   ", line);
+    strncpy(line,newl,255);
+    for (col = 0; col < cols; col++) {
+      if (row * cols + col >= size)
+        break;
+      if (buf[(row * cols) + col] == ' '
+          || isgraph(buf[(row * cols) + col])) {
+        snprintf(newl, 255, "%s%c", line, buf[(row * cols) + col]);
+        strncpy(line,newl,255);
+      } else {
+        snprintf(newl, 255, "%s%c", line, '.');
+        strncpy(line,newl,255);
+      }
+    }
+    printf("%s\r\n", line);
+  }
+  printf("\r\n");
+}
+#pragma GCC diagnostic pop
+
 
 Module::Module(RADIOLIB_PIN_TYPE cs, RADIOLIB_PIN_TYPE irq, RADIOLIB_PIN_TYPE rst, RADIOLIB_PIN_TYPE gpio):
   _cs{cs},
@@ -173,18 +221,18 @@ void Module::SPItransfer(uint8_t cmd, uint8_t reg, uint8_t* dataOut, uint8_t* da
       RADIOLIB_VERBOSE_PRINT("R");
     }
     RADIOLIB_VERBOSE_PRINT("\t");
-    RADIOLIB_VERBOSE_PRINT("0x%x",reg);
-    RADIOLIB_VERBOSE_PRINT("\t");
   #endif
 
   // send data or get response
   if(cmd == SPIwriteCommand) {
     if(dataOut != NULL) {
+      RADIOLIB_VERBOSE_DUMP(iobuf,numBytes+1);
       _spi->transfer(iobuf,numBytes+1);
     }
   } else if (cmd == SPIreadCommand) {
     if(dataIn != NULL) {
       _spi->transfer(iobuf,numBytes+1);
+      RADIOLIB_VERBOSE_DUMP(iobuf,numBytes+1);
       memcpy(dataIn, iobuf+1, numBytes);
     }
   }

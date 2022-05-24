@@ -1065,9 +1065,11 @@ inline unsigned long micros() { return((unsigned long)(STCV)); };
 #if defined(RADIOLIB_VERBOSE)
 #define RADIOLIB_VERBOSE_PRINT(...) RADIOLIB_DEBUG_PRINT(__VA_ARGS__)
 #define RADIOLIB_VERBOSE_PRINTLN(...) RADIOLIB_DEBUG_PRINTLN(__VA_ARGS__)
+#define RADIOLIB_VERBOSE_DUMP(BUF, SIZE) hexDumpBuf(BUF, SIZE)
 #else
 #define RADIOLIB_VERBOSE_PRINT(...) {}
 #define RADIOLIB_VERBOSE_PRINTLN(...) {}
+#define RADIOLIB_VERBOSE_DUMP(BUF, SIZE) {}
 #endif
 
 /*!
