@@ -11,14 +11,11 @@ else
 	$(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $@
 endif
 
-($(OBJS_DIR)/%.o): %.c
-ifeq ($(SILENT),yes)
+$(OBJS_DIR)/%.o : %.cpp
+ifeq ($(SILENT),yes)	
 	@echo "Compiling $< ..."
-	@$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $*.o
-	@$(AR) r $@ $*.o
-	@$(RM) $*.o
+	@$(CXX) -c $(CXXFLAGS) $(CPPFLAGS) $< -o $@
 else
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $*.o
-	$(AR) r $@ $*.o
-	$(RM) $*.o
+	$(CXX) -c $(CXXFLAGS) $(CPPFLAGS) $< -o $@
 endif
+

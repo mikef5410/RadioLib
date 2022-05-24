@@ -1,32 +1,39 @@
 
 INSTALL_PREFIX=/usr/local
 WIRING_PI=/usr/local
-VPATH=.:modules/CC1101:modules/LLCC68:modules/nRF24:modules/RF69
+DEVICE_ACCESS:=../../linux_device_access
+VPATH=.:$(DEVICE_ACCESS):modules/CC1101:modules/LLCC68:modules/nRF24:modules/RF69
 VPATH+=:modules/RFM2x:modules/RFM9x:modules/Si443x:modules/SX1231
 VPATH+=:modules/SX126x:modules/SX127x:modules/SX128x:protocols/AFSK
 VPATH+=:protocols/APRS:protocols/AX25:protocols/FSK4
 VPATH+=:protocols/Hellschreiber:protocols/Morse
 VPATH+=:protocols/PhysicalLayer:protocols/RTTY:protocols/SSTV
 
-INCLUDES=-I/usr/local/include
-
-LIBS=-L/usr/local/lib -lwiringPi
+#INCLUDES=-I/usr/local/include
+#LIBS=-L/usr/local/lib -lwiringPi
+INCLUDES=
+LIBS=
 
 cscope id etags tags: FILETYPES:=-iname "*.cpp" -o -iname "*.hpp" -o -name "*.S" -o -iname "*.c" -o -iname "*.h" -o -name "*.s" -o -name "*.cc"
 cscope id etags tags: INDEX_FILES=$(shell find -L $(subst :, ,$(VPATH)) $(FILETYPES))
 
-CPPFLAGS+=$(INCLUDES)
-CFLAGS+= -fPIC -Wall -g
-CFLAGS+= -Wredundant-decls -Wswitch-default -fpermissive
-CFLAGS+= -DUSE_WIRINGPI $(LIBS)
-CXXFLAGS=$(CFLAGS)
+CPPFLAGS += $(INCLUDES)
+CPPFLAGS += $(patsubst %,-I%,$(subst :, ,$(VPATH)))
+CFLAGS += -fPIC -Wall -g
+CFLAGS += -Wredundant-decls -Wswitch-default
+CFLAGS += -DUSE_WIRINGPI $(LIBS)
+CXXFLAGS = $(CFLAGS) -fpermissive
 
 SRCS:=$(shell find . -name "*.cpp" -printf "%f ")
 SRCS:=$(filter-out Module_%.cpp, $(SRCS))
 SRCS:=$(filter-out Morse.cpp RTTY.cpp Hellschreiber.cpp, $(SRCS))
-OBJS_DIR=build
-#LIBOBJ:=$(addprefix $(OBJS_DIR)/, $(patsubst %.cpp,%.o,$(SRCS)))
+#SRCS:=spi.c $(SRCS)
+
+OBJS_DIR:=build
+$(shell mkdir -p $(OBJS_DIR))
 LIBOBJ:=$(patsubst %.cpp,%.o,$(SRCS))
+LIBOBJ:=$(patsubst %.c,%.o,$(LIBOBJ))
+LIBOBJ:=$(addprefix $(OBJS_DIR)/, $(LIBOBJ))
 
 include mk/deps.mk
 
@@ -48,8 +55,10 @@ install: libRadioLib.so
 
 clean:
 	find . -name "*~" -o -name "#*" -o -name ".#*" | xargs rm -f
-	rm -f *.o
+	rm -f *.o *.so
+	rm -rf $(OBJS_DIR)
 
+include mk/rules.mk
 include mk/tags.mk
 
 include $(wildcard $(patsubst %,$(DEPDIR)/%.d,$(basename $(SRCS))))	

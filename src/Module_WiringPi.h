@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include "wiringPi.h"
 #include "wiringPiSPI.h"
+//#include "spi.h" //linux_device_access
 
 
 
@@ -22,6 +23,7 @@
 // Arduino look-alike layer over WiringPi SPI
 class SPISettings {
 public:
+  //SPI_HANDLE handle;
   uint8_t channel;
   uint32_t clock; //clock frequency in Hz
   uint8_t bitOrder; //MSBFIRST or LSBFIRST
@@ -70,22 +72,27 @@ public:
 
   void beginTransaction(SPISettings& _settings) {
     settings=_settings;
+    //settings.handle=SpiOpenPort(settings.channel, 8, settings.clock, settings.dataMode, 0);
     wiringPiSPISetupMode(settings.channel, settings.clock, settings.dataMode);
     if (preTransHook != NULL) (*preTransHook)();
   }
   uint8_t transfer(uint8_t data) {
     wiringPiSPIDataRW(settings.channel, (unsigned char *)&data, 1);
+    //SpiWriteAndRead(settings.handle, &data, &data, 1, 0);
     return(data);
   }
-  uint16_t transfer16(uint16_t data) {
+  uint16_t transfer16(uint16_t data) { //not used
     wiringPiSPIDataRW(settings.channel, (unsigned char *)&data, 2);
+    //SpiWriteAndRead(settings.handle, &data, &data, 2, 0);
     return(data);
   }
   void transfer(void *buf, size_t count) {
-    wiringPiSPIDataRW(settings.channel, (unsigned char *)&buf, count);
+    //SpiWriteAndRead(settings.handle, (uint8_t *)buf, (uint8_t *)buf, count, 0);
+    wiringPiSPIDataRW(settings.channel, (unsigned char *)buf, count);
   }
   void endTransaction(void) {
     if (postTransHook != NULL) (*postTransHook)();
+    //SpiClosePort(settings.handle);
   }
   void end() {
   }

@@ -33,7 +33,7 @@ Module::Module(RADIOLIB_PIN_TYPE cs, RADIOLIB_PIN_TYPE irq, RADIOLIB_PIN_TYPE rs
   } else {
     _spiSettings.gpioCE = _cs;
     _spiSettings.IPcontrolsCE = 0;
-    _spiSettings.channel = 0; //the IP is going to assert GPIO7 anyway...
+    _spiSettings.channel = 0; //the IP is going to assert GPIO8 anyway...
   }
 }
 
@@ -53,8 +53,6 @@ Module& Module::operator=(const Module& mod) {
 }
 
 void Module::init() {
-  this->pinMode(_cs, OUTPUT);
-  this->digitalWrite(_cs, HIGH);
   if(_initInterface) {
     this->SPIbegin();
   }
@@ -148,16 +146,26 @@ void Module::SPIwriteRegister(uint8_t reg, uint8_t data) {
   SPItransfer(SPIwriteCommand, reg, &data, NULL, 1);
 }
 
+#define MAXIOBUF 1024
 void Module::SPItransfer(uint8_t cmd, uint8_t reg, uint8_t* dataOut, uint8_t* dataIn, uint8_t numBytes) {
+  uint8_t iobuf[MAXIOBUF];
   // start SPI transaction
   this->SPIbeginTransaction();
 
   // pull CS low
   if (!_spiSettings.IPcontrolsCE) {
+    this->pinMode(_cs, OUTPUT);
     this->digitalWrite(_cs, LOW);
   }
   // send SPI register address with access command
-  this->SPItransfer(reg | cmd);
+  //this->SPItransfer(reg | cmd);
+  if (cmd == SPIwriteCommand) {
+    memcpy(iobuf+1, dataOut, numBytes);
+  } else { 
+    memset(iobuf, 0, numBytes+1);
+  }
+  iobuf[0]=reg | cmd;
+  
   #if defined(RADIOLIB_VERBOSE)
     if(cmd == SPIwriteCommand) {
       RADIOLIB_VERBOSE_PRINT("W");
@@ -172,22 +180,14 @@ void Module::SPItransfer(uint8_t cmd, uint8_t reg, uint8_t* dataOut, uint8_t* da
   // send data or get response
   if(cmd == SPIwriteCommand) {
     if(dataOut != NULL) {
-      for(size_t n = 0; n < numBytes; n++) {
-        this->SPItransfer(dataOut[n]);
-        RADIOLIB_VERBOSE_PRINT("0x%x",dataOut[n]);
-        RADIOLIB_VERBOSE_PRINT("\t");
-      }
+      _spi->transfer(iobuf,numBytes+1);
     }
   } else if (cmd == SPIreadCommand) {
     if(dataIn != NULL) {
-      for(size_t n = 0; n < numBytes; n++) {
-        dataIn[n] = this->SPItransfer(0x00);
-        RADIOLIB_VERBOSE_PRINT("0x%x",dataIn[n]);
-        RADIOLIB_VERBOSE_PRINT("\t");
-      }
+      _spi->transfer(iobuf,numBytes+1);
+      memcpy(dataIn, iobuf+1, numBytes);
     }
   }
-  RADIOLIB_VERBOSE_PRINTLN(F(""));
 
   // release CS
   if (!_spiSettings.IPcontrolsCE) {
