@@ -879,7 +879,7 @@ inline unsigned long micros() { return((unsigned long)(STCV)); };
 #include "wiringPiSPI.h"
 // WiringPi platform
 #define RADIOLIB_PLATFORM                           "WiringPi"
-#define RADIOLIB_UNKNOWN_PLATFORM
+#undef RADIOLIB_UNKNOWN_PLATFORM
 #define RADIOLIB_PIN_TYPE                           uint8_t
 #define RADIOLIB_PIN_MODE                           uint8_t
 #define RADIOLIB_PIN_STATUS                         uint8_t
@@ -962,12 +962,12 @@ inline unsigned long micros() { return((unsigned long)(STCV)); };
  * Levels: debug - only main info
  *         verbose - full transcript of all SPI communication
  */
-#if !defined(RADIOLIB_DEBUG)
-#define RADIOLIB_DEBUG
-#endif
-#if !defined(RADIOLIB_VERBOSE)
-#define RADIOLIB_VERBOSE
-#endif
+//#if !defined(RADIOLIB_DEBUG)
+//#define RADIOLIB_DEBUG
+//#endif
+//#if !defined(RADIOLIB_VERBOSE)
+//#define RADIOLIB_VERBOSE
+//#endif
 
 // set which output port should be used for debug output
 // may be Serial port (on Arduino) or file like stdout or stderr (on generic platforms)

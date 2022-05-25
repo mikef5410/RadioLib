@@ -58,6 +58,7 @@ public:
 class SPIClass {
 public:
   SPISettings& settings;
+  int SPIfd=-1;
   void(*preTransHook)() = NULL; //Use these hooks if chip enable is a regular gpio
   void(*postTransHook)() = NULL;
   // Initialize the SPI library
@@ -73,7 +74,9 @@ public:
   void beginTransaction(SPISettings& _settings) {
     settings=_settings;
     //settings.handle=SpiOpenPort(settings.channel, 8, settings.clock, settings.dataMode, 0);
-    wiringPiSPISetupMode(settings.channel, settings.clock, settings.dataMode);
+    if (SPIfd<1) { //Only need to setup once
+      SPIfd=wiringPiSPISetupMode(settings.channel, settings.clock, settings.dataMode);
+    }
     if (preTransHook != NULL) (*preTransHook)();
   }
   uint8_t transfer(uint8_t data) {
